@@ -8,6 +8,7 @@ class Word(models.Model):
 
 
 class Row(models.Model):
+    name = models.CharField(max_length=40)
     author = models.CharField(max_length=40)
     sense = models.TextField()
     words = models.ManyToManyField(Word, through='Status')
