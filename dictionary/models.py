@@ -9,6 +9,7 @@ class Word(models.Model):
         return self.word
 
     word = models.CharField(max_length=40)
+    #lemma = models.CharField(max_length=40)
 
 
 class Row(models.Model):
@@ -16,27 +17,30 @@ class Row(models.Model):
     def __unicode__(self):
 
         # would like to have all the words from the row displayed, but it's too sql-heavy
-        return u'{0} ({1})'.format(self.name, self.author)
+        return u'{0}'.format(self.dominant)
 
-    name = models.CharField(max_length=40)  # could come from the dominant, I guess, needed for admin display
-    author = models.CharField(max_length=40)
+    dominant = models.ForeignKey(Word)  # should we make that a string or a foreign key to word?
     sense = models.TextField()
-    words = models.ManyToManyField(Word, through='Status')
+    example = models.TextField()
+    phrase = models.TextField()
 
 
-class Status(models.Model):
+class SubRow(models.Model):
+
+    groupid = models.CharField(max_length=2)  # can be an integer, a dash '-' or an empty string
+    rowid = models.CharField(max_length=2)
+    row = models.ForeignKey(Row)
+    words = models.ManyToManyField(Word, through='Synonym')
+
+
+class Synonym(models.Model):
 
     def __unicode__(self):
-        return u'{0} ({1}), row {2}'.format(self.word.word, self.status, self.row.name)
+        return u'{0} ({1})'.format(self.word.word, self.subrow.row.dominant)  # ridiculously expensive
 
-    STATUS_CHOICES = (
-        ('D', 'dominant'),
-        ('S', 'synonym'),
-        ('L', 'link')
-    )
-
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     word = models.ForeignKey(Word)
-    row = models.ForeignKey(Row)
+    author = models.CharField(max_length=80)  # authors that put this synonym into this subrow, string, separated
+    mark = models.CharField(max_length=20)  # a mark (colloquial, etc) pertaining to this particular word in this row
+    subrow = models.ForeignKey(SubRow)  # should be null for dominant
 
 # todo (maybe) check there's only one dominant in each row
