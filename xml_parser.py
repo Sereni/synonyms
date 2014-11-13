@@ -1,17 +1,24 @@
+# coding=utf-8
 __author__ = 'Sereni'
 """
 This is a script to extract dictionary data from the combinedDictionary.xml
 and save it to the database.
 """
 
+import sys, os
+
+# note: the path is hardcoded on the next line. change accordingly.
+sys.path.append('/Users/Sereni/PycharmProjects/synonyms/synonyms')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+
 from xml.etree import ElementTree as ET
 from dictionary.models import Word, Row, SubRow, Synonym
 
 
-
 def find_words(xmlroot):
     words = set([])
-    for chunk in root:
+    for chunk in xmlroot:
 
         # save the dominant
         words.add(chunk.attrib['dominant'])
@@ -25,11 +32,12 @@ def find_words(xmlroot):
         # save all synonyms from the row
         for synonym in row:
 
-            # except for the 'redirect' rows
-            if synonym.attrib['redirect']:
-                continue
-
-            words.add(synonym.text)
+            # except for the 'redirect' rows. code 'em like a n00b
+            # note: I have removed both 'перенаправлено' and 'подробнее', the relevant info can be found in row search
+            try:
+                synonym.attrib['redirect']
+            except KeyError:
+                words.add(synonym.text)
     return words
 
 
