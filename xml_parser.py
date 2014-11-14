@@ -3,6 +3,16 @@ __author__ = 'Sereni'
 """
 This is a script to extract dictionary data from the combinedDictionary.xml
 and save it to the database.
+
+ATTENTION!
+Because I am a crappy coder, each chunk of this module should only be run once.
+If you run the script and it fails with an error, flush the database before repeating.
+If you don't, you'll get all sorts of errors and don't say I haven't warned you.
+
+Meanwhile, this can be fixed by adding a check: every time an object is saved to db,
+check that there is no such object in there already.
+
+Please add this check if you have a minute. :)
 """
 
 import sys, os
@@ -41,38 +51,74 @@ def find_words(xmlroot):
                 words.add(synonym.text)
     return words
 
-# todo handle empty fields
-# phrase may be [] for empty
-# example may be None for empty
-# all of them may just be empty
-# todo parse example for author
+# todo in views: parse sense, structure below. added raw.
+# <sense>[: [babenko.txt: Человек, избегающий общества...]]
+# [babenko.txt: Монах, поселившийся в уединении...]</sense>
+# note the arbitrary number of []
+
+# todo anyone, please rename it, its name sucks
+def check_for_empty(s):
+    if s == '[]' or s == 'None' or not s:
+        return '#'
+    return s
+
+
 def extract_row(rowxml):
     for child in rowxml:
         if child.tag == 'sense':
-            sense = child.text
+            sense = check_for_empty(child.text)
         elif child.tag == 'examples':
-            example = child.text
+            example = check_for_empty(child.text)
         elif child.tag == 'phrase_row':
-            phrase = child.text
-    dominant = Word.objects.filter(word=rowxml.attrib['dominant'])
-    row = Row(dominant=dominant,
-              sense=sense,
-              example=example,
-              phrase=phrase
-              )
-    return row.save()
+            phrase = check_for_empty(child.text)
+    dominant = Word.objects.get(word=rowxml.attrib['dominant'])
+    row, created = Row.objects.get_or_create(dominant=dominant,
+                                             sense=sense,
+                                             example=example,
+                                             phrase=phrase
+                                             )
+    return row
+
+
+def pretty_id(i):
+    """
+    This handles the cases of row and group ids looking like '1abr'
+    Also replaces empty ids '' with '#'
+    """
+    if i:
+        try:
+            i / 2
+        except TypeError:
+            if i == '-':
+                pass
+            else:
+                return i[0]
+    else:
+        return '#'
+    return i
 
 
 # all sorts of poorly formatted data in the dictionary on this part
 # will have to invent crutches on display
-# todo handle empty ids
 def get_subrow_ids(rowxml):
     """
     Makes a list of tuples (rowid, groupid) found in the row xml
     """
     ids = set([])
-    for synrow in rowxml:
-        ids.add(synrow.attrib['rowid'], synrow.attrib['groupid'])
+    synrow = rowxml.find('syn_row')
+    for s in synrow:
+        row_id = pretty_id(s.attrib['rowid'])
+        group_id = pretty_id(s.attrib['groupid'])
+        ids.add((row_id, group_id))
+
+        # try:
+        #     s.attrib['rowid'] / 2
+        #     s.attrib['groupid'] / 2
+        #     ids.add((s.attrib['rowid'], s.attrib['groupid']))
+        # except TypeError:
+        #     ids.add(s.attrib['rowid'][:1], s.attrib['groupid'][:1])
+        # except IndexError:
+        #     ids.add(('#', '#'))  # placeholders won't upset the db as much as ''
     return ids
 
 
@@ -82,31 +128,29 @@ def create_subrows(ids, row):
     row adn writes to db.
     """
     for (rowid, groupid) in ids:
-        subrow = SubRow(
+        SubRow.objects.get_or_create(
             rowid=rowid,
             groupid=groupid,
             row=row
         )
-        subrow.save()
 
-# todo add checks for empty attribs. add placeholders
+
 def create_link(xml):
-    subrow = SubRow.objects.get(groupid=xml.attrib['groupid'],
-                                rowid=xml.attrib['rowid'],
-                                row=new_row.pk)
-    word = Word.objects.get(word=syn_xml.text)
+    subrow = SubRow.objects.get(groupid=pretty_id(xml.attrib['groupid']),
+                                rowid=pretty_id(xml.attrib['rowid']),
+                                row=new_row)
+    word = Word.objects.get(word=xml.text)
     author = xml.attrib['dict']  # writing it raw, will parse/replace in views
     if xml.attrib['mark']:
         mark = xml.attrib['mark']
     else:
         mark = '#'  # placeholder for anything that can't be empty
-    synonym = Synonym(
+    Synonym.objects.get_or_create(
         word=word,
         subrow=subrow,
         mark=mark,
         author=author
     )
-    synonym.save()
 
 # tree = ET.parse('combinedDictionary.txt')
 tree = ET.parse('minidict.xml')
@@ -117,8 +161,7 @@ words = find_words(root)
 
 # save to db
 for item in words:
-    word = Word(word=item)
-    word.save()
+    Word.objects.get_or_create(word=item)
 
 # create rows
 for row in root:
@@ -126,17 +169,16 @@ for row in root:
 
     # create subrows
     subrow_ids = get_subrow_ids(row)
-    create_subrows(subrow_ids, new_row.pk)
+    create_subrows(subrow_ids, new_row)
 
     # link words to subrows
     synrow = row.find('syn_row')
     for syn_xml in synrow:
-        create_link(syn_xml)
-        # look up the subrow
-        subrow = SubRow.objects.get(groupid=syn_xml.attrib['groupid'],
-                                    rowid=syn_xml.attrib['rowid'],
-                                    row=new_row.pk)
-        word = Word.objects.get(word=syn_xml.text)
+        try:
+            syn_xml.attrib['redirect']  # now, I'm not sure it's correct to skip those... # todo
+            continue
+        except:
+            create_link(syn_xml)
 
 
 # PROFIT
