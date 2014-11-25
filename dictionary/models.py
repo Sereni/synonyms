@@ -8,7 +8,7 @@ class Word(models.Model):
     def __unicode__(self):
         return self.word
 
-    word = models.CharField(max_length=40)
+    word = models.CharField(max_length=60)  # there are some ridiculously long phrases for synonyms
     #lemma = models.CharField(max_length=40)
 
 
@@ -39,8 +39,8 @@ class Synonym(models.Model):
         return u'{0} ({1})'.format(self.word.word, self.subrow.row.dominant)  # ridiculously expensive
 
     word = models.ForeignKey(Word)
-    author = models.CharField(max_length=80)  # authors that put this synonym into this subrow, string, separated
-    mark = models.CharField(max_length=20)  # a mark (colloquial, etc) pertaining to this particular word in this row
+    author = models.CharField(max_length=120)  # authors that put this synonym into this subrow, string, separated
+    mark = models.CharField(max_length=60)  # a mark (colloquial, etc) pertaining to this particular word in this row
     subrow = models.ForeignKey(SubRow)  # should be null for dominant
 
 # todo (maybe) check there's only one dominant in each row

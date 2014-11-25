@@ -3,16 +3,6 @@ __author__ = 'Sereni'
 """
 This is a script to extract dictionary data from the combinedDictionary.xml
 and save it to the database.
-
-ATTENTION!
-Because I am a crappy coder, each chunk of this module should only be run once.
-If you run the script and it fails with an error, flush the database before repeating.
-If you don't, you'll get all sorts of errors and don't say I haven't warned you.
-
-Meanwhile, this can be fixed by adding a check: every time an object is saved to db,
-check that there is no such object in there already.
-
-Please add this check if you have a minute. :)
 """
 
 import sys, os
@@ -71,6 +61,8 @@ def extract_row(rowxml):
             example = check_for_empty(child.text)
         elif child.tag == 'phrase_row':
             phrase = check_for_empty(child.text)
+    if len(rowxml.attrib['dominant']) > 60:
+        return None
     dominant = Word.objects.get(word=rowxml.attrib['dominant'])
     row, created = Row.objects.get_or_create(dominant=dominant,
                                              sense=sense,
@@ -139,6 +131,8 @@ def create_link(xml):
     subrow = SubRow.objects.get(groupid=pretty_id(xml.attrib['groupid']),
                                 rowid=pretty_id(xml.attrib['rowid']),
                                 row=new_row)
+    if len(xml.text) > 60:
+        return
     word = Word.objects.get(word=xml.text)
     author = xml.attrib['dict']  # writing it raw, will parse/replace in views
     if xml.attrib['mark']:
@@ -153,7 +147,7 @@ def create_link(xml):
     )
 
 # tree = ET.parse('combinedDictionary.txt')
-tree = ET.parse('minidict.xml')
+tree = ET.parse('dict_full.xml')
 root = tree.getroot()
 
 # find words
@@ -161,11 +155,18 @@ words = find_words(root)
 
 # save to db
 for item in words:
-    Word.objects.get_or_create(word=item)
+
+    # all sorts of crap in xml, will have to handle manually
+    if len(item) > 60:
+        continue
+    else:
+        Word.objects.get_or_create(word=item)
 
 # create rows
 for row in root:
     new_row = extract_row(row)
+    if not new_row:
+        continue  # means this is one of the rows with overly long dominants, add manually later on
 
     # create subrows
     subrow_ids = get_subrow_ids(row)
@@ -182,3 +183,5 @@ for row in root:
 
 
 # PROFIT
+# todo either lift the limits on field length and allow trash from xml
+# todo or catch exceptions, preferably as objects, and decide what to do on them manually
