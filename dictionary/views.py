@@ -1,3 +1,8 @@
+from django.template import RequestContext
+from django.shortcuts import render_to_response, redirect
+from models import Word, Row, SubRow, Synonym
+
+
 def index():
     """
     Returns an index page if request is GET
