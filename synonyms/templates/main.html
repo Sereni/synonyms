@@ -24,9 +24,12 @@
       </ul>
     </div>
     <div class="light">
-      <form>
-        <span><input type="text" class="search"><input type="button" value="Искать"></span>
-      </form>
+     <form method="post">
+         <span>
+         <input type="text" name="simple">
+         <input type="submit" name="submit" value="Искать">
+         </span>
+     </form>
     </div>
     <div class="cl">&nbsp;</div>
   </div>
@@ -44,7 +47,7 @@
     <div class="col-12">
       <div class="post">
          <h3><font size = '5px'>Расширенный поиск</font></h3>
-         <form method="post" target="synrow" action="synonym_processor.php">
+         <form method="post">
          <hr>
          <p><font size = '1px'>Введите ключевые слова:</font></p><br>
          <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="150" rows="5"></textarea>
@@ -55,7 +58,7 @@
          <input type="checkbox" name="option3" value="a3">Определение
          <input type="checkbox" name="option4" value="a4">ФРАЗСИН
          <br><br>
-        <span><input type="button" value="Искать"></span>
+        <span><input type="submit" value="Искать"></span>
         </p>
         </form>
       </div>
@@ -63,5 +66,12 @@
 
   </div>
 </div>
+{#remove this section after testing#}
+{% if pks %}
+<h1>Search results! Just kidding.</h1>
+{% for i in pks %}
+    <p>{{ i }}</p>
+{% endfor %}
+{% endif %}
 </body>
 </html>

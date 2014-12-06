@@ -147,7 +147,7 @@ def create_link(xml):
     )
 
 # tree = ET.parse('combinedDictionary.txt')
-tree = ET.parse('dict_full.xml')
+tree = ET.parse('minidict.xml')
 root = tree.getroot()
 
 # find words

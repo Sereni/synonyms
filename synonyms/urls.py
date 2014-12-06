@@ -14,9 +14,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^index/', 'dictionary.views.index', name='index'),
+    url(r'^search/?P<word>\w+', 'dictionary.views.search', name='search'),
+    url(r'^index/$', 'dictionary.views.index', name='index'),
     url(r'^dictionaries/', 'dictionary.views.bibliography', name='bibliorgaphy'),
     url(r'^about/', 'dictionary.views.about', name='about'),
     url(r'^howto/', 'dictionary.views.manual', name='howto'),
-
 )
