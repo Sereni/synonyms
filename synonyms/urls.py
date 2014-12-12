@@ -1,4 +1,6 @@
+# coding=utf-8
 from django.conf.urls.defaults import patterns, include, url
+from dictionary.views import Index
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -14,8 +16,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^search/?P<word>\w+', 'dictionary.views.search', name='search'),
-    url(r'^index/$', 'dictionary.views.index', name='index'),
+
+    # todo think what should really be in the search regex -- capital letters? whitespaces? dashes?
+    url(r'^search/(?P<word>[\w -]+)$', 'dictionary.views.search', name='search'),
+    url(r'^$', Index.as_view()),
     url(r'^dictionaries/', 'dictionary.views.bibliography', name='bibliorgaphy'),
     url(r'^about/', 'dictionary.views.about', name='about'),
     url(r'^howto/', 'dictionary.views.manual', name='howto'),
