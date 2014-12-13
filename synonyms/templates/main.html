@@ -71,7 +71,11 @@
             {% for id, subrow in sub %}
                 <i>{{ id }} </i>
                 {% for author, mark, word in subrow %}
+                    {% if forloop.last %}
+                    <span title="{{ mark|cut:'#' }} {{ author }}">{{ word }}</span>
+                    {% else %}
                     <span title="{{ mark|cut:'#' }} {{ author }}">{{ word }}, </span>
+                    {% endif %}
                     {% endfor %}<br>
                 {% endfor %}
         {{ row.sense|cut:"#" }}<br>
@@ -80,6 +84,8 @@
         {% endif %}
             </p>
     {% endfor %}
+{% else %}
+    <p>По вашему запросу ничего не найдено. Попробуйте использовать расширенный поиск.</p>
 {% endif %}
   </div>
 </div>
