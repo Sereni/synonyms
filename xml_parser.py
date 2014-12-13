@@ -147,7 +147,7 @@ def create_link(xml):
     )
 
 # tree = ET.parse('combinedDictionary.txt')
-tree = ET.parse('minidict.xml')
+tree = ET.parse('dict_full.xml')
 root = tree.getroot()
 
 # find words
@@ -183,5 +183,4 @@ for row in root:
 
 
 # PROFIT
-# todo either lift the limits on field length and allow trash from xml
-# todo or catch exceptions, preferably as objects, and decide what to do on them manually
+# todo catch "петя"

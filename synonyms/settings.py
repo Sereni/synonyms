@@ -7,7 +7,6 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-# todo get a real database before the data goes in
 MANAGERS = ADMINS
 
 # DATABASES = {

@@ -1,10 +1,11 @@
 ﻿<head>
 <title>Главная</title>
+    {% load staticfiles %}
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
-<link rel="shortcut icon" type="image/x-icon" href="css/images/favicon.ico" />
-<script src="js/jquery-1.4.2.js" type="text/javascript"></script>
-<script src="js/js-fnc.js" type="text/javascript"></script>
+<link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="all" />
+<link rel="shortcut icon" type="image/x-icon" href="{% static "css/images/favicon.ico" %}" />
+<script src="{% static "js/jquery-1.4.2.js" %}" type="text/javascript"></script>
+<script src="{% static "js/js-fnc.js" %}" type="text/javascript"></script>
 <link rel="stylesheet" href="font-awesome-4.2.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -63,11 +64,22 @@
         </form>
       </div>
     </div>
-{% if pks %}
-<h1>Search results! Just kidding.</h1>
-{% for i in pks %}
-    <p>{{ i }}</p>
-{% endfor %}
+{% if data %}
+    {% for row, sub in data %}
+        {% if sub|first|last %}
+        <p><b>{{ row.dominant }}</b><br>
+            {% for id, subrow in sub %}
+                <i>{{ id }} </i>
+                {% for author, mark, word in subrow %}
+                    <span title="{{ mark|cut:'#' }} {{ author }}">{{ word }}, </span>
+                    {% endfor %}<br>
+                {% endfor %}
+        {{ row.sense|cut:"#" }}<br>
+        {{ row.example|cut:"#" }}<br>
+        {{ row.phrase|cut:"#" }}
+        {% endif %}
+            </p>
+    {% endfor %}
 {% endif %}
   </div>
 </div>

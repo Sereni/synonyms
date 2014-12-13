@@ -1,12 +1,45 @@
-from django.template import RequestContext
+# coding=utf-8
 from django.shortcuts import render_to_response, redirect
-from django.views.decorators.csrf import csrf_exempt
 from models import Word, Row, SubRow, Synonym
 from django.views.generic.base import View
 # todo in all templates, change links from asdf.html to /fdsa
-
+# todo links to staticfiles in templates, as in main
+# todo wtf is with the design, looks like crap, is it some static I'm missing or are we wasted for good?
+# todo quit swearing in todos
 
 class Index(View):
+
+    def represent(self, rows):  # brace yourselves
+        """
+        Gets a list of Rows
+        Returns a ridiculous structure that eats up templates' brains
+        """
+        d_rows = []
+        for row in rows:
+
+            # got all subrows of a row
+            subrows = row.subrow_set.all()
+
+            # constructing more convenient "display subrows"
+            d_subrows = []
+            for subrow in subrows:
+
+                # got all the words in one subrow, along with their authors and marks
+                words = [(synonym.author, synonym.mark, synonym.word.word) for synonym in subrow.synonym_set.all()]
+
+                # wrote down a ('1.1', words) subrow
+                d_subrow = ('.'.join([subrow.rowid, subrow.groupid]), words)
+                d_subrows.append(d_subrow)
+            d_rows.append((row, d_subrows))  # I'm passing a row and will call its attributes in template
+        return d_rows
+
+# todo убрать баяны [: [: [babenko.txt: Проявляющий заботу, внимание по отношению к кому , чему либо]][babenko.txt: Исполненный внимательного, беспокойного отношения к кому , чему либо и проявляющий подобное отношение в поступках, поведении]]
+
+    def getWords(self, words):
+        """
+        Take a list of Word objects
+        """
+
 
     def clean(self, query):
         # todo implement cleaning
@@ -21,7 +54,6 @@ class Index(View):
             rows = Row.objects.filter(dominant__word=kw)
 
             # imitating activity
-            # todo process the rows in a representation function
             pks = [row.id for row in rows]
             return render_to_response('dictionary/../templates/main.html', {'pks': pks})
 
@@ -55,8 +87,9 @@ class Index(View):
                 rows += results
 
 
-            pks = [row.id for row in rows]
-        return render_to_response('dictionary/../templates/main.html', {'pks': pks})
+            # pks = [row.id for row in rows]
+            data = self.represent(rows)
+        return render_to_response('dictionary/../templates/main.html', {'data': data})
 
 
 def manual(request):
