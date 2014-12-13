@@ -22,6 +22,9 @@ class Row(models.Model):
     sense = models.TextField(db_index=True)
     example = models.TextField()
     phrase = models.TextField()
+    lemmatized_sense = models.TextField()
+    lemmatized_example = models.TextField()
+    lemmatized_phrase = models.TextField()
 
 
 class SubRow(models.Model):

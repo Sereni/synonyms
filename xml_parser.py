@@ -6,6 +6,8 @@ and save it to the database.
 """
 
 import sys, os
+import pymorphy2
+morph = pymorphy2.MorphAnalyzer()
 
 # note: the path is hardcoded on the next line. change accordingly.
 sys.path.append('/Users/Sereni/PycharmProjects/synonyms/synonyms')
@@ -24,6 +26,7 @@ def find_words(xmlroot):
         words.add(chunk.attrib['dominant'])
 
         # find the row
+        row = []
         for item in chunk:
             if item.tag == 'syn_row':
                 row = item
@@ -53,7 +56,19 @@ def check_for_empty(s):
     return s
 
 
+def lemmatize(text):
+    lemmas = ''
+    for word in text.split(' '):
+        lemmas += morph.parse(word.strip(u'(<{«)>}»-‒–—―.,:?!;;%‰‱··]$^[]'))[0].normal_form + ' '
+    # this returns the most probable lemma
+    # uncomment next line to get all possible lemmas for each word:
+    # lemmas += ' '.join(ana.normal_form for ana in morph.parse(word.strip())) + ' '
+
+    return lemmas
+
+
 def extract_row(rowxml):
+    # sense, example, phrase = '#', '#', '#'  # !!!
     for child in rowxml:
         if child.tag == 'sense':
             sense = check_for_empty(child.text)
@@ -67,7 +82,10 @@ def extract_row(rowxml):
     row, created = Row.objects.get_or_create(dominant=dominant,
                                              sense=sense,
                                              example=example,
-                                             phrase=phrase
+                                             phrase=phrase,
+                                             lemmatized_sense=lemmatize(sense),
+                                             lemmatized_example=lemmatize(example),
+                                             lemmatized_phrase=lemmatize(phrase)
                                              )
     return row
 
@@ -98,6 +116,7 @@ def get_subrow_ids(rowxml):
     """
     ids = set([])
     synrow = rowxml.find('syn_row')
+    # if synrow is not None:  # !!!
     for s in synrow:
         row_id = pretty_id(s.attrib['rowid'])
         group_id = pretty_id(s.attrib['groupid'])
@@ -174,6 +193,7 @@ for row in root:
 
     # link words to subrows
     synrow = row.find('syn_row')
+    # if synrow is not None:  # !!!
     for syn_xml in synrow:
         try:
             syn_xml.attrib['redirect']  # now, I'm not sure it's correct to skip those... # todo
