@@ -6,28 +6,28 @@
 <link rel="shortcut icon" type="image/x-icon" href="{% static "css/images/favicon.ico" %}" />
 <script src="{% static "js/jquery-1.4.2.js" %}" type="text/javascript"></script>
 <script src="{% static "js/js-fnc.js" %}" type="text/javascript"></script>
+<script src="{% static "js/functions.js" %}" type="text/javascript"></script>
 <link rel="stylesheet" href="font-awesome-4.2.0/css/font-awesome.min.css">
 </head>
 <body>
 <div id="header">
   <div class="shell">
     <div id="logo-holder">
-      <h1 id="logo"><a href="main.html"><big>SynonymsInRows</big></a></h1>
+      <h1 id="logo"><a href=""><big>SynonymsInRows</big></a></h1>
       <p id="logo">  <big><font color="white">Словарь синонимов</font></big></p>
     </div>
-
     <div id="navigation">
       <ul>
         <li><a href="" class="active" ><span>Главная</span></a></li>
         <li><a href="/howto" ><span>Инструкция</span></a></li>
-        <li><a href="dictionaries.html"><span>Словари</span></a></li>
-        <li><a href="about.html"><span>О нас</span></a></li>
+        <li><a href="/dictionaries"><span>Словари</span></a></li>
+        <li><a href="/about"><span>О нас</span></a></li>
       </ul>
     </div>
     <div class="light">
      <form method="post">
          <span>
-         <input type="text" name="simple">
+         <input type="text" class="search" name="simple">
          <input type="submit" name="submit" value="Искать">
          </span>
      </form>
@@ -54,13 +54,21 @@
          <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="150" rows="5"></textarea>
          <br><br>
          <p><font size = '1px'>Зоны поиска:</font></p><br>
-         <p><input type="checkbox" name="dominant" value="a1">Доминанты
-         <input type="checkbox" name="row" value="a2">Ряд
+         <p><input type="checkbox" name="dominant" value="a1" checked>Доминанты
+         <input type="checkbox" name="row" value="a2" checked>Ряд
          <input type="checkbox" name="definition" value="a3">Определение
          <input type="checkbox" name="phrase" value="a4">ФРАЗСИН
-         <br><br>
-        <span><input type="submit" value="Искать"></span>
+         <br><br></p>
+         <p>
+         <input type="checkbox" name="Абрамов" value="1" checked>Абрамов
+         <input type="checkbox" name="Александрова" value="2" checked>Александрова
+         <input type="checkbox" name="Бабенко" value="3" checked>Бабенко
+         <input type="checkbox" name="Евгеньева" value="4" checked>Евгеньева
+         <input type="checkbox" name="НОСС" value="5" checked>НОСС
+         </p>
+        <p><span><input type="submit" name="submit" value="Искать"></span>
         </p>
+
         </form>
       </div>
     </div>
@@ -72,9 +80,9 @@
                 <i>{{ id }} </i>
                 {% for author, mark, word in subrow %}
                     {% if forloop.last %}
-                    <span title="{{ mark|cut:'#' }} {{ author }}">{{ word }}</span>
+                    <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}">{{ word }}</a>
                     {% else %}
-                    <span title="{{ mark|cut:'#' }} {{ author }}">{{ word }}, </span>
+                    <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}">{{ word }}, </a>
                     {% endif %}
                     {% endfor %}<br>
                 {% endfor %}

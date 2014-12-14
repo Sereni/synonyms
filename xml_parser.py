@@ -18,6 +18,17 @@ from xml.etree import ElementTree as ET
 from dictionary.models import Word, Row, SubRow, Synonym
 
 
+def lemmatize(text):
+    lemmas = ''
+    for word in text.split(' '):
+        lemmas += morph.parse(word.strip(u'(<{«)>}»-‒–—―.,:?!;;%‰‱··]$^[]'))[0].normal_form + ' '
+    # this returns the most probable lemma
+    # uncomment next line to get all possible lemmas for each word:
+    # lemmas += ' '.join(ana.normal_form for ana in morph.parse(word.strip())) + ' '
+
+    return lemmas.strip(' ')
+
+
 def find_words(xmlroot):
     words = set([])
     for chunk in xmlroot:
@@ -26,7 +37,6 @@ def find_words(xmlroot):
         words.add(chunk.attrib['dominant'])
 
         # find the row
-        row = []
         for item in chunk:
             if item.tag == 'syn_row':
                 row = item
@@ -44,34 +54,18 @@ def find_words(xmlroot):
                 words.add(synonym.text)
     return words
 
-# todo in views: parse sense, structure below. added raw.
-# <sense>[: [babenko.txt: Человек, избегающий общества...]]
-# [babenko.txt: Монах, поселившийся в уединении...]</sense>
-# note the arbitrary number of []
 
-# todo anyone, please rename it, its name sucks
 def check_for_empty(s):
     if s == '[]' or s == 'None' or not s:
         return '#'
     return s
 
 
-def lemmatize(text):
-    lemmas = ''
-    for word in text.split(' '):
-        lemmas += morph.parse(word.strip(u'(<{«)>}»-‒–—―.,:?!;;%‰‱··]$^[]'))[0].normal_form + ' '
-    # this returns the most probable lemma
-    # uncomment next line to get all possible lemmas for each word:
-    # lemmas += ' '.join(ana.normal_form for ana in morph.parse(word.strip())) + ' '
-
-    return lemmas
-
-
 def extract_row(rowxml):
-    # sense, example, phrase = '#', '#', '#'  # !!!
     for child in rowxml:
         if child.tag == 'sense':
-            sense = check_for_empty(child.text)
+            sense = pretty_authors(check_for_empty(child.text)).replace('[', '').replace(':', '').\
+                replace(']', '').strip(' ')
         elif child.tag == 'examples':
             example = check_for_empty(child.text)
         elif child.tag == 'phrase_row':
@@ -81,10 +75,9 @@ def extract_row(rowxml):
     dominant = Word.objects.get(word=rowxml.attrib['dominant'])
     row, created = Row.objects.get_or_create(dominant=dominant,
                                              sense=sense,
+                                             lemmatized_sense=lemmatize(sense),
                                              example=example,
                                              phrase=phrase,
-                                             lemmatized_sense=lemmatize(sense),
-                                             lemmatized_example=lemmatize(example),
                                              lemmatized_phrase=lemmatize(phrase)
                                              )
     return row
@@ -116,20 +109,11 @@ def get_subrow_ids(rowxml):
     """
     ids = set([])
     synrow = rowxml.find('syn_row')
-    # if synrow is not None:  # !!!
     for s in synrow:
         row_id = pretty_id(s.attrib['rowid'])
         group_id = pretty_id(s.attrib['groupid'])
         ids.add((row_id, group_id))
 
-        # try:
-        #     s.attrib['rowid'] / 2
-        #     s.attrib['groupid'] / 2
-        #     ids.add((s.attrib['rowid'], s.attrib['groupid']))
-        # except TypeError:
-        #     ids.add(s.attrib['rowid'][:1], s.attrib['groupid'][:1])
-        # except IndexError:
-        #     ids.add(('#', '#'))  # placeholders won't upset the db as much as ''
     return ids
 
 
@@ -146,6 +130,21 @@ def create_subrows(ids, row):
         )
 
 
+def pretty_authors(s):
+    """
+    Replaces dictionary file names with authors' names
+    """
+    replacements = {
+            u'babenko.txt': u'Бабенко',
+            u'noss.txt': u'НОСС',
+            u'aleks.txt': u'Александрова',
+            u'abramov.txt': u'Абрамов',
+            u'evgen.txt': u'Евгеньева'
+        }
+    for key, value in replacements.items():
+            s = s.replace(key, value)
+    return s
+
 def create_link(xml):
     subrow = SubRow.objects.get(groupid=pretty_id(xml.attrib['groupid']),
                                 rowid=pretty_id(xml.attrib['rowid']),
@@ -153,7 +152,7 @@ def create_link(xml):
     if len(xml.text) > 60:
         return
     word = Word.objects.get(word=xml.text)
-    author = xml.attrib['dict']  # writing it raw, will parse/replace in views
+    author = pretty_authors(xml.attrib['dict'])
     if xml.attrib['mark']:
         mark = xml.attrib['mark']
     else:
@@ -193,14 +192,9 @@ for row in root:
 
     # link words to subrows
     synrow = row.find('syn_row')
-    # if synrow is not None:  # !!!
     for syn_xml in synrow:
         try:
             syn_xml.attrib['redirect']  # now, I'm not sure it's correct to skip those... # todo
             continue
         except:
             create_link(syn_xml)
-
-
-# PROFIT
-# todo catch "петя"

@@ -20,11 +20,10 @@ class Row(models.Model):
 
     dominant = models.ForeignKey(Word)
     sense = models.TextField(db_index=True)
+    lemmatized_sense = models.TextField(db_index=True)  # lemmatized sense string
     example = models.TextField()
     phrase = models.TextField()
-    lemmatized_sense = models.TextField()
-    lemmatized_example = models.TextField()
-    lemmatized_phrase = models.TextField()
+    lemmatized_phrase = models.TextField()  # lemmatized phrasesyn string
 
 
 class SubRow(models.Model):
@@ -44,5 +43,3 @@ class Synonym(models.Model):
     author = models.CharField(max_length=200)  # authors that put this synonym into this subrow, string, separated
     mark = models.CharField(max_length=200)  # a mark (colloquial, etc) pertaining to this particular word in this row
     subrow = models.ForeignKey(SubRow)  # should be null for dominant
-
-# todo (maybe) check there's only one dominant in each row

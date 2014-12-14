@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.conf.urls.defaults import patterns, include, url
-from dictionary.views import Index
+from dictionary.views import Index, Bibliography, About, Manual
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', Index.as_view()),
-    url(r'^dictionaries/', 'dictionary.views.bibliography', name='bibliorgaphy'),
-    url(r'^about/', 'dictionary.views.about', name='about'),
-    url(r'^howto/', 'dictionary.views.manual', name='howto'),
+    url(r'^dictionaries/', Bibliography.as_view()),
+    url(r'^about/', About.as_view()),
+    url(r'^howto/', Manual.as_view()),
 )

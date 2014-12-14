@@ -2,12 +2,10 @@
 from django.shortcuts import render_to_response, redirect
 from models import Word, Row, SubRow, Synonym
 from django.views.generic.base import View
-# todo in all templates, change links from asdf.html to /fdsa
-# todo links to staticfiles in templates, as in main
 
 class Index(View):
 
-    def represent(self, rows):  # brace yourselves
+    def represent(self, rows, authors):  # brace yourselves
         """
         Gets a list of Rows
         Returns a ridiculous structure that eats up templates' brains
@@ -23,7 +21,8 @@ class Index(View):
             for subrow in subrows:
 
                 # got all the words in one subrow, along with their authors and marks
-                words = [(synonym.author, synonym.mark, synonym.word.word) for synonym in subrow.synonym_set.all()]
+                words = [(self.process_author(synonym.author), synonym.mark, synonym.word.word) for synonym in
+                         subrow.synonym_set.all() if self.filter_author(synonym.author, authors)]
 
                 # wrote down a ('1.1', words) subrow
                 d_subrow = (self.process_ids(subrow.rowid, subrow.groupid), words)
@@ -33,7 +32,12 @@ class Index(View):
                 d_rows.append((row, sorted(d_subrows)))  # I'm passing a row and will call its attributes in template
         return d_rows
 
-# todo убрать баяны [: [: [babenko.txt: Проявляющий заботу, внимание по отношению к кому , чему либо]][babenko.txt: Исполненный внимательного, беспокойного отношения к кому , чему либо и проявляющий подобное отношение в поступках, поведении]]
+    def filter_author(self, s, a):
+        print s, a
+        for author in a:
+            if author in s:
+                return True
+
 
     def process_ids(self, rowid, groupid):
         if rowid == '#' or groupid == '#':
@@ -47,10 +51,24 @@ class Index(View):
             groupid = ''
         return rowid + groupid
 
+    def process_author(self, s):
+        return ', '.join(s.split('|')), len(s.split('|'))
+
 
     def clean(self, query):
         # todo implement cleaning
         return query.lower().encode('utf-8')
+
+    def get_authors(self, r):
+        a = set([
+            u'Бабенко',
+            u'НОСС',
+            u'Абрамов',
+            u'Александрова',
+            u'Евгеньева'
+        ])
+
+        return a.intersection(set(r))
 
     def get(self, request):
         return render_to_response('dictionary/../templates/main.html')
@@ -67,6 +85,7 @@ class Index(View):
             query = self.clean(request.POST['keywords'])
 
             rows = []
+            pattern = '[:;()!?., ]{0}[:;()!?., ]'.format(query)
 
             if 'dominant' in request.POST.keys():
                 results = Row.objects.filter(dominant__word=query)
@@ -82,46 +101,33 @@ class Index(View):
 
             if 'definition' in request.POST.keys():
 
-                # fixme this will return partial word matches; update to regex if unwanted
-                results = Row.objects.filter(sense__contains=query)
+                results = Row.objects.filter(sense__regex=pattern) #| Row.objects.filter(sense_lem__regex=pattern)
                 results = [row for row in results if row not in rows]
                 rows += results
 
             if 'phrase' in request.POST.keys():
-                results = Row.objects.filter(phrase__contains=query)
+                results = Row.objects.filter(phrase__regex=pattern) #| Row.objects.filter(sense_lem__regex=pattern)
                 results = [row for row in results if row not in rows]
                 rows += results
 
-
-            # pks = [row.id for row in rows]
-            data = self.represent(rows)
+            authors = self.get_authors(request.POST.keys())
+            data = self.represent(rows, authors)
         return render_to_response('dictionary/../templates/main.html', {'data': data})
 
 
-def manual(request):
-    """
-    Returns a static how-to-use page
-    """
-    return render_to_response('dictionary/../templates/instruction.html')
+class Manual(Index):
+
+    def get(self, request):
+        return render_to_response('dictionary/../templates/instruction.html')
 
 
-def about(request):
-    """
-    Returns a static about page
-    """
-    return render_to_response('dictionary/../templates/about.html')
+class About(Index):
+
+    def get(self, request):
+        return render_to_response('dictionary/../templates/about.html')
 
 
-def bibliography(request):
-    """
-    Returns a static bibliography page
-    """
-    return render_to_response('dictionary/../templates/dictionaries.html')
+class Bibliography(Index):
 
-
-# note: in current implementation, the difference between exact query and extended query over dominants
-# is that extended query allows substring matching
-# todo do we want to recreate this ^ behavior?
-
-
-# todo extended search should have an explicit substring checkbox somewhere in the template
+    def get(self, request):
+        return render_to_response('dictionary/../templates/dictionaries.html')
