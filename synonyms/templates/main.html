@@ -86,14 +86,23 @@
                     {% endif %}
                     {% endfor %}<br>
                 {% endfor %}
-        {{ row.sense|cut:"#" }}<br>
-        {{ row.example|cut:"#" }}<br>
-        {{ row.phrase|cut:"#" }}
+        {% if row.sense|cut:"#" %}
+            <b>Определение:</b> {{ row.sense|cut:"#" }}<br>
+        {% endif %}
+        {% if row.example|cut:"#" %}
+            <b>Пример: </b>{{ row.example|cut:"#" }}<br>
+        {% endif %}
+        {% if row.phrase|cut:"#" %}
+            <b>Фразовые синонимы: </b>{{ row.phrase|cut:"#" }}
+        {% endif %}
         {% endif %}
             </p>
+        <br>
     {% endfor %}
 {% else %}
+    {% if msg %}
     <p>По вашему запросу ничего не найдено. Попробуйте использовать расширенный поиск.</p>
+    {% endif %}
 {% endif %}
   </div>
 </div>

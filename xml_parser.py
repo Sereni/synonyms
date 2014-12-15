@@ -64,7 +64,7 @@ def check_for_empty(s):
 def extract_row(rowxml):
     for child in rowxml:
         if child.tag == 'sense':
-            sense = pretty_authors(check_for_empty(child.text)).replace('[', '').replace(':', '').\
+            sense = check_for_empty(child.text).replace('[:', '').replace('[', '').\
                 replace(']', '').strip(' ')
         elif child.tag == 'examples':
             example = check_for_empty(child.text)
@@ -130,20 +130,26 @@ def create_subrows(ids, row):
         )
 
 
-def pretty_authors(s):
-    """
-    Replaces dictionary file names with authors' names
-    """
-    replacements = {
-            u'babenko.txt': u'Бабенко',
-            u'noss.txt': u'НОСС',
-            u'aleks.txt': u'Александрова',
-            u'abramov.txt': u'Абрамов',
-            u'evgen.txt': u'Евгеньева'
-        }
-    for key, value in replacements.items():
-            s = s.replace(key, value)
-    return s
+# def pretty_authors(s):
+#     """
+#     Replaces dictionary file names with authors' names
+#     """
+#     replacements = {
+#             u'babenko.txt': u'. Бабенко: ',
+#             u'noss.txt': u'. НОСС: ',
+#             u'aleks.txt': u'. Александрова:',
+#             u'abramov.txt': u'. Абрамов: ',
+#             u'evgen.txt': u'. Евгеньева: '
+#         }
+#
+#     # this is a brilliant way to check whether the string came from author or sense field
+#     if '[' not in s:
+#         for key, value in replacements.items():
+#                 s = s.replace(key, value).replace(' ', '').replace('.', '').replace(':', '')
+#     else:
+#         for key, value in replacements.items():
+#             s = s.replace(key,  value)
+#     return s.replace('.', '').strip(' ')
 
 def create_link(xml):
     subrow = SubRow.objects.get(groupid=pretty_id(xml.attrib['groupid']),
@@ -152,7 +158,7 @@ def create_link(xml):
     if len(xml.text) > 60:
         return
     word = Word.objects.get(word=xml.text)
-    author = pretty_authors(xml.attrib['dict'])
+    author = xml.attrib['dict']
     if xml.attrib['mark']:
         mark = xml.attrib['mark']
     else:
@@ -165,7 +171,7 @@ def create_link(xml):
     )
 
 # tree = ET.parse('combinedDictionary.txt')
-tree = ET.parse('dict_full.xml')
+tree = ET.parse('dict_full_r.xml')
 root = tree.getroot()
 
 # find words

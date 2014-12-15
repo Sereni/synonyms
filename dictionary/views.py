@@ -12,7 +12,6 @@ class Index(View):
         """
         d_rows = []
         for row in rows:
-
             # got all subrows of a row
             subrows = row.subrow_set.all()
 
@@ -33,7 +32,7 @@ class Index(View):
         return d_rows
 
     def filter_author(self, s, a):
-        print s, a
+
         for author in a:
             if author in s:
                 return True
@@ -71,7 +70,7 @@ class Index(View):
         return a.intersection(set(r))
 
     def get(self, request):
-        return render_to_response('dictionary/../templates/main.html')
+        return render_to_response('dictionary/../templates/main.html', {'data': ''})
 
     def post(self, request):
         if 'simple' in request.POST.keys():
@@ -85,7 +84,7 @@ class Index(View):
             query = self.clean(request.POST['keywords'])
 
             rows = []
-            pattern = '[:;()!?., ]{0}[:;()!?., ]'.format(query)
+            pattern = '(^|[:;()!?., ]){0}([:;()!?., ]|$)'.format(query)
 
             if 'dominant' in request.POST.keys():
                 results = Row.objects.filter(dominant__word=query)
@@ -101,18 +100,19 @@ class Index(View):
 
             if 'definition' in request.POST.keys():
 
-                results = Row.objects.filter(sense__regex=pattern) #| Row.objects.filter(sense_lem__regex=pattern)
+                results = Row.objects.filter(sense__regex=pattern) | Row.objects.filter(lemmatized_sense__regex=pattern)
                 results = [row for row in results if row not in rows]
                 rows += results
+                print results
 
             if 'phrase' in request.POST.keys():
-                results = Row.objects.filter(phrase__regex=pattern) #| Row.objects.filter(sense_lem__regex=pattern)
+                results = Row.objects.filter(phrase__regex=pattern) | Row.objects.filter(lemmatized_phrase__regex=pattern)
                 results = [row for row in results if row not in rows]
                 rows += results
 
             authors = self.get_authors(request.POST.keys())
             data = self.represent(rows, authors)
-        return render_to_response('dictionary/../templates/main.html', {'data': data})
+        return render_to_response('dictionary/../templates/main.html', {'data': data, 'msg': True})
 
 
 class Manual(Index):
