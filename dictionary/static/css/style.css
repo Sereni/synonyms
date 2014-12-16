@@ -213,7 +213,7 @@ input[type=text]{
         color:#FFFFFF;
 }
  
-input[type=submit], input[type=submit]:hover {
+input[type=button], input[type=button]:hover {
         position:relative; 
 	padding:6px 15px 6px 15px;
         border:1px solid #adc5cf;
@@ -228,19 +228,17 @@ input[type=submit], input[type=submit]:hover {
         color:#7da2aa;
         cursor: pointer;
 }
-
-
 .light{
         background: url('light_grey.jpg');
 }
 .light input[type=text]{
         border:1px solid #acb1b7;
-        background-color:#4d6c84;}
+        background-color:#4d6c84;
 
 .lighter, .light, .dark {
         width:95%;
         height:50px;
-        padding:40px 25px;}
+        padding:40px 25px;
 .check{
 	margin:10pt
 }
