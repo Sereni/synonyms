@@ -74,10 +74,19 @@ class Index(View):
 
     def post(self, request):
         if 'simple' in request.POST.keys():
+
+            # simple doesn't accept any authors, we assume all at once. make it less hardcoded someday...
+            auth_def = set([
+            u'Бабенко',
+            u'НОСС',
+            u'Абрамов',
+            u'Александрова',
+            u'Евгеньева'
+            ])
             kw = self.clean(request.POST['simple'])
             rows = Row.objects.filter(dominant__word=kw)
 
-            data = self.represent(rows)
+            data = self.represent(rows, auth_def)
             return render_to_response('dictionary/../templates/main.html', {'data': data})
 
         elif 'keywords' in request.POST.keys():
