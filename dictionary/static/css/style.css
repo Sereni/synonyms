@@ -253,3 +253,11 @@ input[type=submit], input[type=submit]:hover {
 .d3{background:#87CEEB}
 .d2{background:#FA8072}
 .d1{background:#C0C0C0}
+
+#aiContactSafe_row_aics_config, #aiContactSafe_row_aics_config_2 {
+    width: 50%;
+}
+
+#aiContactSafe_row_aics_config_2 {
+    float: right;
+}

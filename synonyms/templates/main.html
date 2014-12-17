@@ -45,38 +45,41 @@
 
 <div id="main">
   <div class="shell">
-    <div class="col-12">
+    <div class="col-8">
       <div class="post">
          <h3><font size = '5px'>Расширенный поиск</font></h3>
          <form method="post">
          <hr>
          <p><font size = '1px'>Введите ключевые слова:</font></p><br>
-         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="150" rows="2"></textarea>
+         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="100" rows="2"></textarea>
          <br><br>
-         <p><font size = '1px'>Зоны поиска:</font></p><br>
-         <p><input type="checkbox" name="dominant" value="a1" checked>Доминанты
+         <p><font size = '2px'>Зоны поиска:</font>
+         <input type="checkbox" name="dominant" value="a1" checked>Доминанты
          <input type="checkbox" name="row" value="a2" checked>Ряд
          <input type="checkbox" name="definition" value="a3">Определение
          <input type="checkbox" name="phrase" value="a4">ФРАЗСИН
-         <br><br></p>
-         <p>
+         <br>
+         <font size = '2px'>Словари:</font>
          <input type="checkbox" name="Абрамов" value="1" checked>Абрамов
          <input type="checkbox" name="Александрова" value="2" checked>Александрова
          <input type="checkbox" name="Бабенко" value="3" checked>Бабенко
          <input type="checkbox" name="Евгеньева" value="4" checked>Евгеньева
          <input type="checkbox" name="НОСС" value="5" checked>НОСС
-         </p>
-        <p><span><input type="submit" name="submit" value="Искать"></span>
         </p>
+        <p><span><input type="submit" name="submit" value="Искать"></span> </p>
 
         </form>
       </div>
     </div>
+<br>
 
-<font size = '3px'{% if data %}
+<font size = '3px'>
+  {% if data %}
+    <h3><font size = '5px'>Результат</font></h3>
+    <hr>
     {% for row, sub in data %}
         {% if sub|first|last %}
-        <b>{{ row.dominant }}</b><br>
+       <b>{{ row.dominant }}</b><br>
             {% for id, subrow in sub %}
                 <i>{{ id }} </i>
                 {% for author, mark, word in subrow %}
