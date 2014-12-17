@@ -51,7 +51,7 @@
          <form method="post">
          <hr>
          <p><font size = '1px'>Введите ключевые слова:</font></p><br>
-         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="150" rows="5"></textarea>
+         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="150" rows="2"></textarea>
          <br><br>
          <p><font size = '1px'>Зоны поиска:</font></p><br>
          <p><input type="checkbox" name="dominant" value="a1" checked>Доминанты
@@ -72,10 +72,11 @@
         </form>
       </div>
     </div>
-{% if data %}
+
+<font size = '3px'{% if data %}
     {% for row, sub in data %}
         {% if sub|first|last %}
-        <p><b>{{ row.dominant }}</b><br>
+        <b>{{ row.dominant }}</b><br>
             {% for id, subrow in sub %}
                 <i>{{ id }} </i>
                 {% for author, mark, word in subrow %}
@@ -87,7 +88,7 @@
                     {% endfor %}<br>
                 {% endfor %}
         {% if row.sense|cut:"#" %}
-            <b>Определение:</b> {{ row.sense|cut:"#" }}<br>
+            <p>Определение:</p> {{ row.sense|cut:"#" }}<br>
         {% endif %}
         {% if row.example|cut:"#" %}
             <b>Пример: </b>{{ row.example|cut:"#" }}<br>
@@ -96,7 +97,7 @@
             <b>Фразовые синонимы: </b>{{ row.phrase|cut:"#" }}
         {% endif %}
         {% endif %}
-            </p>
+
         <br>
     {% endfor %}
 {% else %}
@@ -104,7 +105,7 @@
     <p>По вашему запросу ничего не найдено. Попробуйте использовать расширенный поиск.</p>
     {% endif %}
 {% endif %}
+</font>
   </div>
-</div>
 </body>
 </html>

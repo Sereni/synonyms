@@ -5,7 +5,6 @@
 body {
 	font-size:11px;
 	color:#000000;
-	background:#fff;
 }
 a {
 	color:#0252aa;
@@ -213,7 +212,7 @@ input[type=text]{
         color:#FFFFFF;
 }
  
-input[type=button], input[type=button]:hover {
+input[type=submit], input[type=submit]:hover {
         position:relative; 
 	padding:6px 15px 6px 15px;
         border:1px solid #adc5cf;
@@ -245,7 +244,11 @@ input[type=button], input[type=button]:hover {
 
 
 
-.d5{background:#FFD700}      
+.d5{
+	background #FFD700;
+	colour #FA8072
+
+}
 .d4{background:#32CD32}
 .d3{background:#87CEEB}
 .d2{background:#FA8072}
