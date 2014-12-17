@@ -50,9 +50,8 @@
       <div class="post">
          <h3><font size = '5px'>Расширенный поиск</font></h3>
          <form method="post">
-         <hr>
-         <p><font size = '1px'>Введите ключевые слова:</font></p><br>
-         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="85" rows="1"></textarea>
+         <br>
+         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="85" rows="1" placeholder="Введите ключевые слова:" onfocus="placeholder='';" onblur="placeholder='Введите ключевые слова:';"></textarea>
          <br><br>
          <div class = >
          <p><font size = '2px'>Зоны поиска:</font>
@@ -81,7 +80,7 @@
     <hr>
     {% for row, sub in data %}
         {% if sub|first|last %}
-       <b>{{ row.dominant }}</b><br>
+        <b><font size = '4px'>{{ row.dominant }}</font></b><br>
             {% for id, subrow in sub %}
                 <i>{{ id }} </i>
                 {% for author, mark, word in subrow %}

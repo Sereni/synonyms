@@ -225,7 +225,7 @@ input[type=submit], input[type=submit]:hover {
         background: -ms-linear-gradient(top, #e4f1f9 0%,#d5e7f3 100%); /* IE10+ */
         background: linear-gradient(top, #e4f1f9 0%,#d5e7f3 100%); /* W3C */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4f1f9', endColorstr='#d5e7f3',GradientType=0 ); /* IE6-9 */
-        color:#7da2aa;
+        color: #133c5d;
         cursor: pointer;
 }
 .light{
