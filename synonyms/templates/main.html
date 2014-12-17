@@ -92,7 +92,7 @@
                     {% endfor %}<br>
                 {% endfor %}
         {% if row.sense|cut:"#" %}
-            <p>Определение:</p> {{ row.sense|cut:"#" }}<br>
+            <b>Определение:</b> {% autoescape off %}{{ row.sense|cut:"#" }}{% endautoescape %}<br>
         {% endif %}
         {% if row.example|cut:"#" %}
             <b>Пример: </b>{{ row.example|cut:"#" }}<br>

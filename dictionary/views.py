@@ -2,6 +2,7 @@
 from django.shortcuts import render_to_response, redirect
 from models import Word, Row, SubRow, Synonym
 from django.views.generic.base import View
+import re
 
 class Index(View):
 
@@ -10,8 +11,11 @@ class Index(View):
         Gets a list of Rows
         Returns a ridiculous structure that eats up templates' brains
         """
+        regSense = re.compile(u'(Бабенко|НОСС|Абрамов|Александрова|Евгеньева)')
+
         d_rows = []
         for row in rows:
+            row.sense = regSense.sub(u'</br>\\1', row.sense)
             # got all subrows of a row
             subrows = row.subrow_set.all()
 
