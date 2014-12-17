@@ -24,6 +24,7 @@ input, textarea, select {
 }
 textarea {
 	overflow:hidden;
+	font-size: 20px
 }
 .cl {
 	display:block;
@@ -193,27 +194,27 @@ textarea {
 }
 
 
-	
-.search { 
+
+.search {
 	position:relative;
 	left 0px;
 	right 2px;
         padding:6px 15px 6px 30px;
 	margin:3px 0px 2px 10px;
-        background: url('Zoom.png') no-repeat 5px 5px; 
+        background: url('Zoom.png') no-repeat 5px 5px;
 }
-.rounded { 
-        border-radius:15px; 
-        -moz-border-radius:15px; 
-        -webkit-border-radius:15px; 
+.rounded {
+        border-radius:15px;
+        -moz-border-radius:15px;
+        -webkit-border-radius:15px;
 }
 
 input[type=text]{
         color:#FFFFFF;
 }
- 
+
 input[type=submit], input[type=submit]:hover {
-        position:relative; 
+        position:relative;
 	padding:6px 15px 6px 15px;
         border:1px solid #adc5cf;
         background: #e4f1f9; /* Old browsers */
@@ -244,20 +245,4 @@ input[type=submit], input[type=submit]:hover {
 
 
 
-.d5{
-	background #FFD700;
-	colour #FA8072
 
-}
-.d4{background:#32CD32}
-.d3{background:#87CEEB}
-.d2{background:#FA8072}
-.d1{background:#C0C0C0}
-
-#aiContactSafe_row_aics_config, #aiContactSafe_row_aics_config_2 {
-    width: 50%;
-}
-
-#aiContactSafe_row_aics_config_2 {
-    float: right;
-}
