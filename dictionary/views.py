@@ -100,12 +100,12 @@ class Index(View):
             pattern = '(^|[:;()!?., ]){0}([:;()!?., ]|$)'.format(query)
 
             if 'dominant' in request.POST.keys():
-                results = Row.objects.filter(dominant__word=query)
+                results = Row.objects.filter(dominant__word__regex=pattern)
                 results = [row for row in results if row not in rows]
                 rows += results
 
             if 'row' in request.POST.keys():
-                subrows = SubRow.objects.filter(words__word=query)
+                subrows = SubRow.objects.filter(words__word__regex=pattern)
                 for subrow in subrows:
                     row = subrow.row
                     if row not in rows:
