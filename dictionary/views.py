@@ -91,7 +91,8 @@ class Index(View):
             rows = Row.objects.filter(dominant__word=kw)
 
             data = self.represent(rows, auth_def)
-            return render_to_response('dictionary/../templates/main.html', {'data': data})
+            return render_to_response('dictionary/../templates/main.html', {'data': data,
+                                                                            'msg': True})
 
         elif 'keywords' in request.POST.keys():
             query = self.clean(request.POST['keywords'])
