@@ -83,6 +83,7 @@
         {% if sub|first|last %}
         <b><font size = '4px'>{{ row.dominant }}</font></b><br>
             {% for id, subrow in sub %}
+                {% ifchanged id|first %}<br>{% endifchanged %}
                 <i>{{ id }} </i>
                 {% for author, mark, word in subrow %}
                     {% if forloop.last %}
@@ -91,7 +92,7 @@
                     <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}">{{ word }}, </a>
                     {% endif %}
                     {% endfor %}<br>
-                {% endfor %}
+            {% endfor %}
         {% if row.sense|cut:"#" %}
             <b>Определение:</b> {% autoescape off %}{{ row.sense|cut:"#" }}{% endautoescape %}<br>
         {% endif %}
@@ -99,7 +100,7 @@
             <b>Пример: </b>{{ row.example|cut:"#" }}<br>
         {% endif %}
         {% if row.phrase|cut:"#" %}
-            <b>Фразовые синонимы: </b>{{ row.phrase|cut:"#" }}
+            <b>Фразовые синонимы: </b>{{ row.phrase|cut:"#" }}<br>
         {% endif %}
         {% endif %}
 
