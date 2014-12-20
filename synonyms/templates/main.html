@@ -52,9 +52,9 @@
          <h3><font size = '5px'>Расширенный поиск</font></h3>
          <form method="post">
          <br>
-         <textarea name="keywords" style = 'border:solid 1px #4d6c84' cols="85" rows="1" placeholder="Введите ключевые слова:" onfocus="placeholder='';" onblur="placeholder='Введите ключевые слова:';"></textarea>
+         <input type="text" name="keywords"  style = 'border:solid 1px #4d6c84; font-size:18; width: 1000px; color: black' placeholder="Введите ключевые слова: " >
          <br><br>
-         <div class = >
+
          <p><font size = '2px'>Зоны поиска:</font>
          <input type="checkbox" name="dominant" value="a1" checked>Доминанты
          <input type="checkbox" name="row" value="a2" checked>Ряд
@@ -73,11 +73,13 @@
         </div></form>
       </div>
     </div>
+</div>
 <br>
 
+<div class = 'shell'>
 <font size = '3px'>
   {% if data %}
-    <h3><font size = '5px'>Результат</font></h3>
+    <h3><font size = '5px'>Результат по запросу </font></h3>
     <hr>
     {% for row, sub in data %}
         {% if sub|first|last %}
@@ -85,13 +87,15 @@
             {% for id, subrow in sub %}
                 {% ifchanged id|first %}<br>{% endifchanged %}
                 <i>{{ id }} </i>
+
                 {% for author, mark, word in subrow %}
                     {% if forloop.last %}
-                    <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}">{{ word }}</a>
+                    <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}" style = 'border-radius: 5px'>{{ word }}</a>
                     {% else %}
-                    <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}">{{ word }}, </a>
+                    <a title="{{ mark|cut:'#' }} {{ author|first }}" class="d{{ author|last }}" style = 'border-radius: 5px'>{{ word }}</a>,
                     {% endif %}
                     {% endfor %}<br>
+
             {% endfor %}
         {% if row.sense|cut:"#" %}
             <b>Определение:</b> {% autoescape off %}{{ row.sense|cut:"#" }}{% endautoescape %}<br>
@@ -108,10 +112,11 @@
     {% endfor %}
 {% else %}
     {% if msg %}
-    <p>По вашему запросу ничего не найдено. Попробуйте использовать расширенный поиск.</p>
+    <p>По вашему запросу ничего не найдено.</p>
     {% endif %}
 {% endif %}
 </font>
-  </div>
+</div>
+
 </body>
 </html>
