@@ -1,4 +1,4 @@
-﻿<head>
+﻿﻿<head>
 <title>Главная</title>
     {% load staticfiles %}
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
@@ -55,13 +55,13 @@
          <input type="text" name="keywords"  style = 'border:solid 1px #4d6c84; font-size:18; width: 1000px; color: black' placeholder="Введите ключевые слова: " >
          <br><br>
 
-         <p><font size = '2px'>Зоны поиска:</font>
+         <p>Зоны поиска:
          <input type="checkbox" name="dominant" value="a1" checked>Доминанты
          <input type="checkbox" name="row" value="a2" checked>Ряд
          <input type="checkbox" name="definition" value="a3"checked>Определение
          <input type="checkbox" name="phrase" value="a4"checked>ФРАЗСИН
          <br>
-         <font size = '2px'>Словари:</font>
+         Словари:
          <input type="checkbox" name="Абрамов" value="1" checked>Абрамов
          <input type="checkbox" name="Александрова" value="2" checked>Александрова
          <input type="checkbox" name="Бабенко" value="3" checked>Бабенко
@@ -79,8 +79,8 @@
 <div class = 'shell'>
 <font size = '3px'>
   {% if data %}
-    <h3><font size = '5px'>Результат по запросу </font></h3>
-    <hr>
+    <h3><font size = '5px'>Результат по запросу <i>{{ query }}</i></font></h3>
+    <hr><br>
     {% for row, sub in data %}
         {% if sub|first|last %}
         <b><font size = '4px'>{{ row.dominant }}</font></b><br>

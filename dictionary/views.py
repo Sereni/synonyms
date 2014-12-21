@@ -92,7 +92,8 @@ class Index(View):
 
             data = self.represent(rows, auth_def)
             return render_to_response('dictionary/../templates/main.html', {'data': data,
-                                                                            'msg': True})
+                                                                            'msg': True,
+                                                                            'query': kw})
 
         elif 'keywords' in request.POST.keys():
             query = self.clean(request.POST['keywords'])
@@ -126,7 +127,7 @@ class Index(View):
 
             authors = self.get_authors(request.POST.keys())
             data = self.represent(rows, authors)
-        return render_to_response('dictionary/../templates/main.html', {'data': data, 'msg': True})
+        return render_to_response('dictionary/../templates/main.html', {'data': data, 'msg': True, 'query': query})
 
 
 class Manual(Index):
