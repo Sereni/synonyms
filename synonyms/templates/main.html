@@ -19,10 +19,10 @@
     </div>
     <div id="navigation">
       <ul>
-        <li><a href="" class="active" ><span>Главная</span></a></li>
-        <li><a href="/howto" ><span>Инструкция</span></a></li>
-        <li><a href="/dictionaries"><span>Словари</span></a></li>
-        <li><a href="/about"><span>О нас</span></a></li>
+        <li><a href="/synonyms" class="active" ><span>Главная</span></a></li>
+        <li><a href="/synonyms/howto" ><span>Инструкция</span></a></li>
+        <li><a href="/synonyms/dictionaries"><span>Словари</span></a></li>
+        <li><a href="/synonyms/about"><span>О нас</span></a></li>
       </ul>
     </div>
     <div class="light">
@@ -49,27 +49,42 @@
   <div class="shell">
     <div class="col-12">
       <div class="post">
-         <h3><font size = '5px'>Расширенный поиск</font></h3>
+         
          <form method="post">
          <br>
-         <input type="text" name="keywords"  style = 'border:solid 1px #4d6c84; font-size:18; width: 1000px; color: black' placeholder="Введите ключевые слова: " >
-         <br><br>
-
-         <p>Зоны поиска:
-         <input type="checkbox" name="dominant" value="a1" checked>Доминанты
-         <input type="checkbox" name="row" value="a2" checked>Ряд
-         <input type="checkbox" name="definition" value="a3"checked>Определение
-         <input type="checkbox" name="phrase" value="a4"checked>ФРАЗСИН
-         <br>
-         Словари:
-         <input type="checkbox" name="Абрамов" value="1" checked>Абрамов
-         <input type="checkbox" name="Александрова" value="2" checked>Александрова
-         <input type="checkbox" name="Бабенко" value="3" checked>Бабенко
-         <input type="checkbox" name="Евгеньева" value="4" checked>Евгеньева
-         <input type="checkbox" name="НОСС" value="5" checked>НОСС
-        </p>
-        <p><span><input type="submit" name="submit" value="Искать"></span> </p>
-
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td width="60%">
+				<h3><font size = '5px'>Расширенный поиск</font></h3><br><br>
+				<input type="text" name="keywords"  style = 'border:solid 1px #4d6c84; font-size:18; width: 95%; color: black' placeholder="Введите ключевые слова: " ><br><br>
+				   <p><span><input type="submit" name="submit" value="Искать"></span> </p>
+				</td>
+				<td>
+				
+					<table width="100%" cellpadding="0" cellspacing="0" border="0">
+						<tr>
+						<td valign="top" width="40%">
+						Зоны поиска:<br>
+						<input type="checkbox" name="dominant" value="a1" checked>Доминанты<br>
+						 <input type="checkbox" name="row" value="a2" checked>Ряд<br>
+						 <input type="checkbox" name="definition" value="a3"checked>Определение<br>
+						 <input type="checkbox" name="phrase" value="a4"checked>ФРАЗСИН
+						 </td>
+						<td>
+						Словари:<br>
+						 <input type="checkbox" name="Абрамов" value="1" checked>Абрамов<br>
+						 <input type="checkbox" name="Александрова" value="2" checked>Александрова<br>
+						 <input type="checkbox" name="Бабенко" value="3" checked>Бабенко<br>
+						 <input type="checkbox" name="Евгеньева" value="4" checked>Евгеньева<br>
+						 <input type="checkbox" name="НОСС" value="5" checked>НОСС
+						</td>
+						</tr>
+					</table>
+				
+			</td>
+			</tr>
+			</table>
+     
         </div></form>
       </div>
     </div>
